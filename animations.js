@@ -1,251 +1,44 @@
-// 1. Move this function to the TOP of your file (before any other code)
-function closeDrawerAndNavigate(targetHref) {
-  const drawer = document.querySelector('.drawer_wrap.u-vflex-left-bottom');
-  
-  // Kill any active timeline
-  if (window.toggleTimeline && window.toggleTimeline.isActive()) {
-    window.toggleTimeline.kill();
-  }
-  
-  // Reset main content position immediately
-  gsap.to('.page_main', { duration: 0.2, y: 0, ease: 'power1.out' });
-  
-  // Create a timeline with all drawer elements fading out simultaneously
-  const timeline = gsap.timeline({
-    onComplete: () => {
-      // Hide the drawer
-      drawer.classList.add('is-hidden');
-      
-      // IMPORTANT: Disable Barba completely before navigation
-      if (window.barba) {
-        // Destroy barba instance to prevent it from handling the navigation
-        window.barba.destroy();
-      }
-      
-      // Navigate directly - this will force a full page reload with no Barba interference
-      window.location.href = targetHref;
-    }
-  });
-  
-  // Fade out everything quickly
-  timeline.to(drawer, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0);
-  
-  return timeline;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  const instrumentsBtn = document.querySelector('#Instruments.navbar13_link');
-  const drawer = document.querySelector('.drawer_wrap.u-vflex-left-bottom');
-  window.toggleTimeline = null; // Make toggleTimeline global so it can be accessed by closeDrawerAndNavigate
-
-  if (!instrumentsBtn || !drawer) return;
-
-  // Function to open the drawer
-  function openDrawer() {
-    // Set Header-Text to "Instruments" by default on drawer open
-    const headerTextElement = document.getElementById('Header-Text');
-    if (headerTextElement) {
-      headerTextElement.textContent = "Instruments";
-    }
-    
-    drawer.classList.remove('is-hidden');
-    gsap.to('.page_main', { duration: 0.5, y: 50, ease: 'power2.out' });
-    toggleTimeline = gsap.timeline();
-
-    // Animate the background fade in first (0.2s)
-    const drawerBg = drawer.querySelector('.drawer_bg');
-    if (drawerBg) {
-      toggleTimeline.fromTo(drawerBg,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.2, ease: 'power2.out' }
-      );
-    }
-
-    // Animate the container fading in and moving in from y: 50 (0.15s)
-    const drawerContain = drawer.querySelector('.drawer_contain');
-    if (drawerContain) {
-      toggleTimeline.fromTo(drawerContain,
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.15, ease: 'power2.out' },
-        "-=0.1"
-      );
-    }
-
-    // Then animate the drawer items with a fluid staggered motion and overlap
-    const drawerItems = drawer.querySelectorAll('.drawer_list > *');
-    toggleTimeline.fromTo(drawerItems,
-      { opacity: 0, y: 3 },
-      { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out', stagger: {
-        each: 0.08,
-        from: "start",
-        ease: "power1.in"
-      }}
-    );
-  }
-
-  // Function to close the drawer
-  function closeDrawer(fast = false, clickedItem = null) {
-    if (toggleTimeline && toggleTimeline.isActive()) {
-      toggleTimeline.kill();
-    }
-    gsap.to('.page_main', { duration: 0.5, y: 0, ease: 'power2.out' });
-    // Use 0 delay if fast is true, otherwise 1 second delay
-    const delayTime = fast ? 0 : 1;
-    toggleTimeline = gsap.timeline({
-      delay: delayTime,
-      onComplete: () => {
-        drawer.classList.add('is-hidden');
-        // Optionally, reset the drawer's opacity for future animations
-        drawer.style.opacity = 1;
-        // Update Header-Text element from the element with ID "Current"
-        const currentElem = document.getElementById('Current');
-        const headerElem = document.getElementById('Header-Text');
-        if (currentElem && headerElem) {
-          headerElem.textContent = currentElem.textContent;
-        }
-      }
-    });
-
-    // Fade out the drawer list items with separate handling for the clicked item.
-    const drawerItems = drawer.querySelectorAll('.drawer_list_item');
-    let nonClickedItems = [];
-
-    // Separate the clicked item from the others.
-    drawerItems.forEach(item => {
-      if (clickedItem && item === clickedItem) {
-        // We'll handle this one later.
-      } else {
-        nonClickedItems.push(item);
-      }
-    });
-
-    // Fade out all non-clicked items immediately at timeline time 0.
-    if (nonClickedItems.length) {
-      toggleTimeline.to(nonClickedItems, { opacity: 0, duration: 0.3, ease: 'power2.inOut' }, 0);
-    }
-
-    // Delay the fade out of the clicked item so that it remains visible for even a bit longer.
-    if (clickedItem) {
-      toggleTimeline.to(clickedItem, { opacity: 0, duration: 1.5, ease: 'power2.out' }, 1.5);
-    }
-
-    // Then fade out the container (with vertical movement) as before.
-    const drawerContain = drawer.querySelector('.drawer_contain');
-    if (drawerContain) {
-      toggleTimeline.fromTo(drawerContain,
-        { opacity: 1, y: 0 },
-        { opacity: 0, y: 50, duration: 0.15, ease: 'power2.in' },
-        "-=0.05"
-      );
-    }
-
-    // Finally, fade out the background (.drawer_bg) earlier by using a larger negative offset:
-    const drawerBg = drawer.querySelector('.drawer_bg');
-    if (drawerBg) {
-      toggleTimeline.fromTo(
-        drawerBg,
-        { opacity: 1 },
-        { opacity: 0, duration: 0.35, ease: 'power2.inOut' },
-        "-=0.8"  // Adjust this value to start the background fade-out earlier.
-      );
-    }
-  }
-
-  // Toggle drawer on #Instruments click
-  instrumentsBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (toggleTimeline && toggleTimeline.isActive()) {
-      toggleTimeline.kill();
-    }
-    if (drawer.classList.contains('is-hidden')) {
-      openDrawer();
-    } else {
-      // When instrumentsBtn is clicked and drawer is open, close it fast
-      closeDrawer(true);
-    }
-  });
-
-  // Close the drawer when clicking on .drawer_bg
-  const drawerBg = drawer.querySelector('.drawer_bg');
-  if (drawerBg) {
-    drawerBg.addEventListener('click', (e) => {
-      e.preventDefault();
-      // Only close if the drawer is currently open
-      if (!drawer.classList.contains('is-hidden')) {
-        closeDrawer(true);
-      }
-    });
-  }
-
-  // Close the drawer when any .g_clickable_link inside .drawer_wrap is clicked
-  const clickableLinks = drawer.querySelectorAll('.g_clickable_link');
-  clickableLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      // Only close if the drawer is currently open
-      if (!drawer.classList.contains('is-hidden')) {
-        // Identify the clicked drawer item (assumes the link is inside .drawer_list_item)
-        const clickedItem = link.closest('.drawer_list_item');
-        closeDrawer(true, clickedItem); // Pass clickedItem to delay its fade-out
-      }
-    });
-  });
-
-  const homeBtn = document.querySelector("#Home");
-  if (homeBtn) {
-    homeBtn.addEventListener("click", (e) => {
-      if (!drawer.classList.contains("is-hidden")) {
-        e.preventDefault();
-        
-        // INSTANTLY hide the drawer (no animation)
-        drawer.classList.add('is-hidden');
-        
-        // After a very tiny delay, navigate
-        setTimeout(() => {
-          window.location.href = homeBtn.getAttribute('href');
-        }, 50);
-      }
-    });
-  }
+  // Update navbar title
+  updateNavbarTitle();
   
-  // Removed GSAP hover effect for .drawer_list_item; using CSS hover instead
-  // (Original GSAP code removed)
+  // Update header text from Current element
+  updateHeaderTextFromCurrent();
+  
+  // Initialize dynamic header functionality
+  initDynamicHeader();
+  
+  // Initialize horizontal scroll listener
+  initHeaderOnScroll();
+  
+  // Initialize Barba.js
+  initBarba();
+  
+  // Initialize scroll animations
+  initScrollAnimations();
+  
+  // Add horizontal scroll initialization
+  initSmoothHorizontalScroll();
+});
 
-  // At the end of the DOMContentLoaded callback (before it closes), update the navbar title assignment:
+// Function to update navbar title
+function updateNavbarTitle() {
   const navbarTitle = document.querySelector('.navbar13_component .navbar_title');
   if (navbarTitle) {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     navbarTitle.textContent = currentPage;
   }
+}
 
-  // Update Header-Text element based on the element with ID "Current" for initial page load
+// Function to update header text from Current element
+function updateHeaderTextFromCurrent() {
   const currentElem = document.getElementById('Current');
   const headerElem = document.getElementById('Header-Text');
   if (currentElem && headerElem) {
     headerElem.textContent = currentElem.textContent;
-    console.log('Initial page load update, Header-Text set to:', headerElem.textContent);
+    console.log('Header-Text updated to:', headerElem.textContent);
   }
-
-  // For other nav links, same approach - simple and clean
-  const navLinks = document.querySelectorAll('.navbar13_link:not(.w--current):not(#Instruments)');
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      if (!drawer.classList.contains('is-hidden')) {
-        e.preventDefault();
-        
-        // INSTANTLY hide the drawer (no animation)
-        drawer.classList.add('is-hidden');
-        
-        // After a very tiny delay, navigate
-        setTimeout(() => {
-          window.location.href = link.getAttribute('href');
-        }, 50);
-      }
-    });
-  });
-});
-
-// Barba.js initialization and configuration
+}
 
 // Function to reset Webflow interactions and update the current page data
 function resetWebflow(data) {
@@ -256,12 +49,12 @@ function resetWebflow(data) {
   
   // Reinitialize Webflow interactions
   if (window.Webflow) {
-    window.Webflow.destroy(); // Destroy current Webflow animations
-    window.Webflow.ready();   // Prepare Webflow for the new content
+    window.Webflow.destroy();
+    window.Webflow.ready();
     if (window.Webflow.require) {
       const ix2 = window.Webflow.require('ix2');
       if (ix2 && typeof ix2.init === 'function') {
-        ix2.init();  // Initialize interactions if available
+        ix2.init();
       } else {
         console.error('Webflow IX2 not available for initialization.');
       }
@@ -277,13 +70,103 @@ function resetWebflow(data) {
   });
 }
 
-// Ensure ScrollTrigger is registered
-gsap.registerPlugin(ScrollTrigger);
+// Function to initialize Barba.js
+function initBarba() {
+  if (!window.barba) return;
+  
+  barba.init({
+    prevent: ({ el }) => {
+      return el.hasAttribute('data-barba-prevent');
+    },
+    transitions: [{
+      name: 'simple-transition',
+      async leave({ current }) {
+        // Normal leave animation for all links (no special flag check)
+        await gsap.to(current.container, { 
+          opacity: 0,
+          y: 20, 
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      },
+      beforeEnter() {
+        window.scrollTo(0, 0);
+      },
+      enter({ next }) {
+        // Just fade in the container - we'll handle drawer items separately
+        gsap.from(next.container, { 
+          opacity: 0,
+          y: 20, 
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      }
+    }]
+  });
+  
+  // This is the key part - handle drawer items in the after hook
+  barba.hooks.after((data) => {  // Make sure we're passing the data parameter
+    // First reset everything 
+    $(window).scrollTop(0);
+    
+    // Now look for drawer items AFTER the page has been fully transitioned
+    const drawerItems = document.querySelectorAll('.drawer_list_item');
+    
+    if (drawerItems.length > 0) {
+      console.log(`Animating ${drawerItems.length} drawer items with stagger`);
+      
+      // Force them to be invisible first
+      gsap.set(drawerItems, { opacity: 0, y: 30 });
+      
+      // Then animate with a very obvious stagger
+      gsap.to(drawerItems, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8, // Longer duration
+        delay: 0.1, // Short delay after page transition
+        ease: 'power2.out',
+        stagger: {
+          amount: 0.7, // Use amount instead of each for more obvious stagger
+          from: "start"
+        },
+        onStart: () => console.log('Drawer stagger animation started'),
+        onComplete: () => {
+          console.log('Drawer stagger animation completed');
+          // Re-initialize drawer hover effects after animation
+          bindDrawerItemHover();
+        }
+      });
+    }
+    
+    // Make sure to pass data to resetWebflow
+    if (data) {
+      resetWebflow(data);
+    }
+    
+    initScrollAnimations();
+    updateNavbarTitle();
+    
+    // Ensure header interactions are reinitialized
+    updateHeaderTextFromCurrent();
+    initDynamicHeader();
+    initHeaderOnScroll();
+    
+    // Add this line to initialize horizontal scrolling after navigation
+    initSmoothHorizontalScroll();
+  });
+  
+  // Remove the afterEnter hook as we're doing everything in after hook
+}
 
-/* Function to initialize scroll animations for .g_visual_img, .reference_img, and .slider_visual elements with stagger for groups on the same x axis */
+// Ensure ScrollTrigger is registered
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+// Function to initialize scroll animations for images
 function initScrollAnimations() {
   // Get all targeted elements
   var images = gsap.utils.toArray('.g_visual_img, .reference_img, .slider_visual');
+  
+  if (images.length === 0) return;
   
   // Group images by their left offset (rounded to remove tiny variations)
   var groups = {};
@@ -301,7 +184,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 2,
       ease: 'power2.out',
-      stagger: 0.2, // Delay improvements between images in the same group
+      stagger: 0.2,
       scrollTrigger: {
         trigger: groups[key][0],
         start: 'top 80%',
@@ -314,96 +197,7 @@ function initScrollAnimations() {
   ScrollTrigger.refresh();
 }
 
-/* Barba.js hooks and initialization */
-barba.hooks.after((data) => {
-  // Scroll to top and reinitialize Webflow interactions
-  $(window).scrollTop(0);
-  resetWebflow(data);
-  initPageScripts();
-  // Reinitialize scroll animations for the new content
-  initScrollAnimations();
-
-  // Update navbar title based on the current URL after the last "/"
-  const navbarTitle = document.querySelector('.navbar13_component .navbar_title');
-  if (navbarTitle) {
-    // Use data.next.url from Barba for the new URL
-    let newUrl = (data.next.url.href) ? data.next.url.href : data.next.url;
-    let urlObj = new URL(newUrl);
-    const currentPage = urlObj.pathname.split('/').pop() || 'index.html';
-    navbarTitle.textContent = currentPage;
-  }
-});
-
-barba.hooks.afterEnter(() => {
-  // Delay slightly to ensure window.location and content are updated
-  setTimeout(() => {
-    // Update the navbar title (if needed)
-    const navbarTitle = document.querySelector('.navbar13_component .navbar_title');
-    if (navbarTitle) {
-      const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-      navbarTitle.textContent = currentPage;
-    }
-    // Update Header-Text from the element with ID "Current"
-    const currentElem = document.getElementById('Current');
-    const headerElem = document.getElementById('Header-Text');
-    if (currentElem && headerElem) {
-      headerElem.textContent = currentElem.textContent;
-      console.log('AfterEnter: Header-Text updated to:', headerElem.textContent);
-    }
-  }, 100);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  barba.init({
-    // Prevent Barba from handling links with the data-barba-prevent attribute
-    prevent: ({ el }) => {
-      // Skip transitions when our flag is set or for links with data-barba-prevent
-      return window.skipBarbaTransition || el.hasAttribute('data-barba-prevent');
-    },
-    transitions: [{
-      name: 'fade-transition',
-      // This function runs BEFORE any page transition starts
-      // Perfect place to close the drawer!
-      leave(data) {
-        return new Promise(resolve => {
-          const drawer = document.querySelector('.drawer_wrap.u-vflex-left-bottom');
-          
-          // If drawer is open, close it first, then resolve to continue the transition
-          if (drawer && !drawer.classList.contains('is-hidden')) {
-            // Quick fade-out of the drawer
-            gsap.to(drawer, { 
-              opacity: 0, 
-              duration: 0.2, 
-              onComplete: () => {
-                drawer.classList.add('is-hidden');
-                resolve(); // Continue with Barba transition
-              }
-            });
-          } else {
-            // Drawer not open, continue immediately
-            resolve();
-          }
-        });
-      },
-      // Then continue with your normal transitions
-      async leave({ current }) {
-        await gsap.to(current.container, { opacity: 0, y: 50, duration: 0.5, ease: 'power2.out' });
-      },
-      beforeEnter() {
-        window.scrollTo(0, 0);
-      },
-      enter({ next }) {
-        gsap.from(next.container, { opacity: 0, y: 50, duration: 0.5, ease: 'power2.out' });
-      }
-    }]
-  });
-
-  // Initialize scroll-trigger animations on initial page load
-  initScrollAnimations();
-});
-
-// Add new event delegation code at the end of the file:
-
+// Event delegation for hover effects on drawer items
 document.addEventListener('mouseover', (e) => {
   const hiddenText = e.target.closest('.drawer_hidden_text');
   if (hiddenText) {
@@ -422,49 +216,37 @@ function handleDrawerItemHover() {
     if (headerElement) {
       headerElement.textContent = hiddenText.textContent;
       console.log('Updated header text with:', hiddenText.textContent);
-    } else {
-      console.error('Header-Text element not found');
     }
-  } else {
-    console.warn('No .drawer_hidden_text found in', this);
   }
 }
 
 function bindDrawerItemHover() {
   const drawerItems = document.querySelectorAll('.drawer_list_item');
+  console.log(`Binding hover events to ${drawerItems.length} drawer items`);
+  
+  if (drawerItems.length === 0) return;
+  
   drawerItems.forEach(item => {
-    // Remove old event listener to prevent duplicates
+    // Clean up existing listeners
     item.removeEventListener('mouseenter', handleDrawerItemHover);
-    // Add mouseenter event listener to update header text on hover
+    // Add fresh listener
     item.addEventListener('mouseenter', handleDrawerItemHover);
+    console.log('Added hover listener to drawer item:', item);
   });
 }
 
-// Bind events on initial page load
-document.addEventListener('DOMContentLoaded', () => {
-  bindDrawerItemHover();
-});
-
-// Re-bind events after Barba transitions so new drawer items are set up.
-barba.hooks.afterEnter(() => {
-  // Delay slightly to ensure new elements are ready
-  setTimeout(bindDrawerItemHover, 200);
-});
-
-// Ensure GSAP TextPlugin is registered
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
-
+// Function to update header text based on ScrollTrigger
 function updateHeaderText(item) {
-  // Get the text from the hidden text element
   const newText = item.querySelector(".drawer_hidden_text")?.textContent;
   if (newText) {
-    // Animate the header text to the new value
     gsap.to("#Header-Text", {duration: 0.3, text: {value: newText}});
-    console.log("ScrollTrigger updated Header-Text to:", newText);
   }
 }
 
 function initDynamicHeader() {
+  // Bind hover events
+  bindDrawerItemHover();
+  
   // Grab all drawer list items
   const drawerItems = gsap.utils.toArray(".drawer_list_item");
   
@@ -472,28 +254,14 @@ function initDynamicHeader() {
   drawerItems.forEach(item => {
     ScrollTrigger.create({
       trigger: item,
-      scroller: ".drawer_list",   // The horizontal scrolling container
-      start: "left center",         // Adjust as needed for your layout
+      scroller: ".drawer_list",
+      start: "left center",
       end: "right center",
       onEnter: () => updateHeaderText(item),
       onEnterBack: () => updateHeaderText(item)
     });
   });
 }
-
-// Call initDynamicHeader after everything is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  // Existing initializations...
-
-  // Initialize dynamic header updates via scroll
-  initDynamicHeader();
-});
-
-// Optionally, if you have Barba transitions, reinitialize after each transition:
-barba.hooks.afterEnter(() => {
-  // Delay slightly to ensure new elements are ready
-  setTimeout(initDynamicHeader, 200);
-});
 
 // Function that checks which drawer item is closest to the center of the drawer_list
 function updateHeaderOnScroll() {
@@ -511,7 +279,6 @@ function updateHeaderOnScroll() {
   
   items.forEach(item => {
     const itemRect = item.getBoundingClientRect();
-    // Compute the center of the item
     const itemCenter = itemRect.left + itemRect.width / 2;
     const distance = Math.abs(itemCenter - containerCenter);
     if (distance < minDistance) {
@@ -526,21 +293,135 @@ function updateHeaderOnScroll() {
     if (headerElem && hiddenTextElem) {
       const newText = hiddenTextElem.textContent;
       if (headerElem.textContent !== newText) {
-        // Update and optionally animate the header text for a smooth transition
         gsap.to(headerElem, { duration: 0.3, text: { value: newText } });
-        console.log("Dynamically updated Header-Text to:", newText);
       }
     }
   }
 }
 
-// Create a ScrollTrigger that continuously calls updateHeaderOnScroll
-ScrollTrigger.create({
-  trigger: ".drawer_list",     // The horizontal scrolling container
-  scroller: ".drawer_list",      // (Adjust if your scroller is different)
-  start: "left left",            // You may need to tweak these values
-  end: "right right",
-  scrub: 0.1,                    // This links the update to the scroll progress
-  onUpdate: updateHeaderOnScroll
-});
+// Function to initialize horizontal scroll header update
+function initHeaderOnScroll() {
+  const drawerList = document.querySelector('.drawer_list');
+  if (!drawerList) return;
+  
+  // Create a ScrollTrigger that continuously calls updateHeaderOnScroll
+  ScrollTrigger.create({
+    trigger: ".drawer_list",
+    scroller: ".drawer_list",
+    start: "left left",
+    end: "right right",
+    scrub: 0.1,
+    onUpdate: updateHeaderOnScroll
+  });
+}
+
+// Add this function to implement smooth horizontal scrolling for the drawer
+function initSmoothHorizontalScroll() {
+  const drawerListWrap = document.querySelector('.drawer_list_wrap');
+  
+  if (!drawerListWrap) return;
+  
+  // Make sure the container has the right CSS properties
+  gsap.set(drawerListWrap, {
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    webkitOverflowScrolling: 'touch' // For momentum scrolling on iOS
+  });
+  
+  // Add mousewheel support for horizontal scrolling
+  drawerListWrap.addEventListener('wheel', (e) => {
+    // Prevent vertical page scrolling when hovering the drawer
+    if (Math.abs(e.deltaX) < Math.abs(e.deltaY) && e.deltaY !== 0) {
+      e.preventDefault();
+      // Scroll horizontally instead of vertically
+      drawerListWrap.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+  
+  // Add scroll arrows/indicators
+  addScrollIndicators(drawerListWrap);
+  
+  console.log('Horizontal scroll initialized for drawer_list_wrap');
+}
+
+// Add visual indicators that the content is scrollable
+function addScrollIndicators(scrollContainer) {
+  // Create container for the indicators
+  const indicatorsContainer = document.createElement('div');
+  indicatorsContainer.className = 'scroll-indicators';
+  indicatorsContainer.style.cssText = `
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  `;
+  
+  // Create left arrow
+  const leftArrow = document.createElement('button');
+  leftArrow.innerHTML = '←';
+  leftArrow.className = 'scroll-arrow left-arrow';
+  leftArrow.style.cssText = `
+    background: rgba(0,0,0,0.3);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  `;
+  
+  // Create right arrow
+  const rightArrow = document.createElement('button');
+  rightArrow.innerHTML = '→';
+  rightArrow.className = 'scroll-arrow right-arrow';
+  rightArrow.style.cssText = leftArrow.style.cssText;
+  
+  // Add event listeners to scroll left/right
+  leftArrow.addEventListener('click', () => {
+    gsap.to(scrollContainer, {
+      scrollLeft: '-=300', 
+      duration: 0.5,
+      ease: 'power2.out'
+    });
+  });
+  
+  rightArrow.addEventListener('click', () => {
+    gsap.to(scrollContainer, {
+      scrollLeft: '+=300',
+      duration: 0.5,
+      ease: 'power2.out'
+    });
+  });
+  
+  // Update arrow visibility based on scroll position
+  function updateArrowVisibility() {
+    leftArrow.style.opacity = scrollContainer.scrollLeft > 20 ? '0.7' : '0.3';
+    rightArrow.style.opacity = 
+      scrollContainer.scrollLeft < (scrollContainer.scrollWidth - scrollContainer.clientWidth - 20) 
+        ? '0.7' : '0.3';
+  }
+  
+  // Listen for scroll events to update arrow visibility
+  scrollContainer.addEventListener('scroll', updateArrowVisibility);
+  window.addEventListener('resize', updateArrowVisibility);
+  
+  // Add arrows to the indicators container
+  indicatorsContainer.appendChild(leftArrow);
+  indicatorsContainer.appendChild(rightArrow);
+  
+  // Add indicators to the parent of the scroll container
+  scrollContainer.parentNode.style.position = 'relative';
+  scrollContainer.parentNode.appendChild(indicatorsContainer);
+  
+  // Initial visibility update
+  updateArrowVisibility();
+}
 
