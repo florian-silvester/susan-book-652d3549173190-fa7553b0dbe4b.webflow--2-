@@ -17,7 +17,7 @@
   --container--small: 90rem;
   --container--full: 90rem;
   --_spacing---space--2: var(--size--0-75rem);
-  --site--gutter: var(--size--0-125rem);
+  --site--gutter: var(--size--0-5rem);
   --size--0rem: 0rem;
   --_spacing---space--1: var(--size--0-5rem);
   --_spacing---space--3: var(--size--1rem);
@@ -29,7 +29,7 @@
   --_typography---font--primary-medium: 400;
   --_typography---font--primary-bold: 700;
   --radius--small: 0rem;
-  --radius--main: var(--size--0rem);
+  --radius--main: var(--size--0-125rem);
   --radius--round: 100vw;
   --border-width--main: .0725rem;
   --_theme---border: var(--swatch--dark-faded);
@@ -37,7 +37,7 @@
   --_typography---line-height--1: 1;
   --swatch--transparent: transparent;
   --size--1-5rem: 1.5rem;
-  --swatch--brand: #c5beb8;
+  --swatch--brand: #f7f6f2;
   --size--3rem: 3rem;
   --_button-style---border: var(--_theme---button-primary--border);
   --_button-style---background: var(--_theme---button-primary--background);
@@ -45,19 +45,22 @@
   --_button-style---border-hover: var(--_theme---button-primary--border-hover);
   --_button-style---background-hover: var(--_theme---button-primary--background-hover);
   --_button-style---text-hover: var(--_theme---button-primary--text-hover);
-  --_spacing---section-space--small: var(--size--5rem);
+  --_spacing---section-space--small: var(--size--3rem);
   --site--margin: 0px;
   --size--0-125rem: .125rem;
   --_spacing---section-space--none: var(--size--0rem);
-  --_spacing---section-space--main: var(--size--10rem);
+  --_spacing---section-space--main: var(--size--8rem);
   --_spacing---section-space--large: var(--size--15rem);
   --_spacing---section-space--page-top: var(--size--15rem);
   --size--2-5rem: 2.5rem;
-  --_theme---background-secondary: var(--swatch--light-secondary);
+  --column-width--3: 0px;
+  --swatch--light-secondary: #ffffffb3;
+  --size--0-25rem: .25rem;
   --column-width--4: 0px;
   --column-width--6: 0px;
-  --column-width--1: 0px;
-  --size--9-5rem: 9.5rem;
+  --column-width--2: 0px;
+  --size--12rem: 12rem;
+  --_theme---background-secondary: var(--swatch--light-secondary);
   --_text-style---text-transform: var(--_typography---text-transform--none);
   --_text-style---trim-top: var(--_typography---font--primary-trim-top);
   --_text-style---trim-bottom: var(--_typography---font--primary-trim-bottom);
@@ -71,7 +74,6 @@
   --swatch--dark: #171717;
   --swatch--dark-faded: #3532331a;
   --swatch--light: #fff;
-  --swatch--light-secondary: #f5f2ed99;
   --swatch--light-faded: #fbfbf880;
   --swatch--brand-text: var(--swatch--dark);
   --_theme---button-primary--background: var(--swatch--brand);
@@ -86,7 +88,6 @@
   --_theme---button-secondary--background-hover: var(--swatch--dark);
   --_theme---button-secondary--border-hover: var(--swatch--dark);
   --_theme---button-secondary--text-hover: var(--swatch--light);
-  --size--0-25rem: .25rem;
   --size--0-375rem: .375rem;
   --size--1-25rem: 1.25rem;
   --size--2rem: 2rem;
@@ -102,21 +103,23 @@
   --size--8rem: 8rem;
   --size--8-5rem: 8.5rem;
   --size--9rem: 9rem;
+  --size--9-5rem: 9.5rem;
   --size--10rem: 10rem;
   --size--11rem: 11rem;
-  --size--12rem: 12rem;
   --size--13rem: 13rem;
   --size--14rem: 14rem;
   --size--15rem: 15rem;
   --size--16rem: 16rem;
   --_typography---font--primary-trim-top: .37em;
   --_typography---font--primary-trim-bottom: .34em;
-  --_typography---font--secondary-family: "Abcsolarvariable Trial", Arial, sans-serif;
+  --_typography---font--secondary-family: Monoserif, Verdana, sans-serif;
+  --_typography---font--secondary-trim-top: .3em;
+  --_typography---font--secondary-trim-bottom: .4em;
   --_typography---letter-spacing--0-03em: -.03em;
   --_typography---letter-spacing--0-01em: -.01em;
   --_typography---letter-spacing--0-02em: .03em;
   --_typography---line-height--1-1: 1.1;
-  --_typography---line-height--1-25: 1.25;
+  --_typography---line-height--1-25: 1.33;
   --_typography---line-height--1-33: 1.33;
   --_typography---font-size--text-small: var(--size--0-75rem);
   --_typography---font-size--text-main: var(--size--1rem);
@@ -128,8 +131,7 @@
   --_typography---font-size--h2: var(--size--3rem);
   --_typography---font-size--h1: var(--size--4rem);
   --_typography---font-size--display: var(--size--5rem);
-  --column-width--2: 0px;
-  --column-width--3: 0px;
+  --column-width--1: 0px;
   --column-width--5: 0px;
   --column-width--7: 0px;
   --column-width--8: 0px;
@@ -364,10 +366,10 @@ figure {
   --_text-style---font-size: var(--_typography---font-size--h2);
   --_text-style---line-height: var(--_typography---line-height--1-25);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
-  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-02em);
+  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-03em);
   --_text-style---margin-top: var(--_spacing---space--7);
   --_text-style---margin-bottom: var(--_spacing---space--5);
-  --_text-style---text-transform: var(--_typography---text-transform--uppercase);
+  --_text-style---text-transform: var(--_typography---text-transform--none);
   --_text-style---trim-top: var(--_typography---font--primary-trim-top);
   --_text-style---trim-bottom: var(--_typography---font--primary-trim-bottom);
   text-transform: var(--_text-style---text-transform);
@@ -385,10 +387,10 @@ figure {
   --_text-style---font-size: var(--_typography---font-size--h3);
   --_text-style---line-height: var(--_typography---line-height--1-25);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
-  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-03em);
+  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-02em);
   --_text-style---margin-top: var(--_spacing---space--7);
   --_text-style---margin-bottom: var(--_spacing---space--5);
-  --_text-style---text-transform: var(--_typography---text-transform--none);
+  --_text-style---text-transform: var(--_typography---text-transform--uppercase);
   --_text-style---trim-top: var(--_typography---font--primary-trim-top);
   --_text-style---trim-bottom: var(--_typography---font--primary-trim-bottom);
   text-transform: var(--_text-style---text-transform);
@@ -404,7 +406,7 @@ figure {
   letter-spacing: var(--_text-style---letter-spacing);
   --_text-style---font-family: var(--_typography---font--primary-family);
   --_text-style---font-size: var(--_typography---font-size--h4);
-  --_text-style---line-height: var(--_typography---line-height--1-25);
+  --_text-style---line-height: var(--_typography---line-height--1-33);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
   --_text-style---letter-spacing: var(--_typography---letter-spacing--0-01em);
   --_text-style---margin-top: var(--_spacing---space--7);
@@ -511,12 +513,12 @@ figure {
   --_text-style---font-size: var(--_typography---font-size--text-small);
   --_text-style---line-height: var(--_typography---line-height--1-33);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
-  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-02em);
+  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-01em);
   --_text-style---margin-top: var(--_spacing---space--5);
   --_text-style---margin-bottom: var(--_spacing---space--5);
-  --_text-style---text-transform: var(--_typography---text-transform--uppercase);
-  --_text-style---trim-top: var(--_typography---font--primary-trim-top);
-  --_text-style---trim-bottom: var(--_typography---font--primary-trim-bottom);
+  --_text-style---text-transform: var(--_typography---text-transform--none);
+  --_text-style---trim-top: var(--_typography---font--secondary-trim-top);
+  --_text-style---trim-bottom: var(--_typography---font--secondary-trim-bottom);
   text-transform: var(--_text-style---text-transform);
   text-wrap: pretty;
   font-feature-settings: "calt" 1, "liga" 1, "rlig" 1, "rvrn" 1, "kern" 1, "rclt" 1, "ss01" 1, "ss04" 1, "ss06" 1, "ss07" 1, "ss12" 1, "ss13" 1, "ss15" 1, "case" 1;
@@ -557,10 +559,10 @@ figure {
   --_text-style---font-size: var(--_typography---font-size--h2);
   --_text-style---line-height: var(--_typography---line-height--1-25);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
-  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-02em);
+  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-03em);
   --_text-style---margin-top: var(--_spacing---space--7);
   --_text-style---margin-bottom: var(--_spacing---space--5);
-  --_text-style---text-transform: var(--_typography---text-transform--uppercase);
+  --_text-style---text-transform: var(--_typography---text-transform--none);
   --_text-style---trim-top: var(--_typography---font--primary-trim-top);
   --_text-style---trim-bottom: var(--_typography---font--primary-trim-bottom);
   text-transform: var(--_text-style---text-transform);
@@ -579,10 +581,10 @@ figure {
   --_text-style---font-size: var(--_typography---font-size--h3);
   --_text-style---line-height: var(--_typography---line-height--1-25);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
-  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-03em);
+  --_text-style---letter-spacing: var(--_typography---letter-spacing--0-02em);
   --_text-style---margin-top: var(--_spacing---space--7);
   --_text-style---margin-bottom: var(--_spacing---space--5);
-  --_text-style---text-transform: var(--_typography---text-transform--none);
+  --_text-style---text-transform: var(--_typography---text-transform--uppercase);
   --_text-style---trim-top: var(--_typography---font--primary-trim-top);
   --_text-style---trim-bottom: var(--_typography---font--primary-trim-bottom);
   text-transform: var(--_text-style---text-transform);
@@ -599,7 +601,7 @@ figure {
   letter-spacing: var(--_text-style---letter-spacing);
   --_text-style---font-family: var(--_typography---font--primary-family);
   --_text-style---font-size: var(--_typography---font-size--h4);
-  --_text-style---line-height: var(--_typography---line-height--1-25);
+  --_text-style---line-height: var(--_typography---line-height--1-33);
   --_text-style---font-weight: var(--_typography---font--primary-regular);
   --_text-style---letter-spacing: var(--_typography---letter-spacing--0-01em);
   --_text-style---margin-top: var(--_spacing---space--7);
@@ -2062,6 +2064,10 @@ figure {
   inset: 0% 0% auto;
 }
 
+.page_code_custom {
+  display: none;
+}
+
 .styleguide_group {
   padding-top: var(--_spacing---space--7);
   grid-column-gap: var(--_spacing---space--5);
@@ -2166,6 +2172,10 @@ figure {
   opacity: .1;
   background-color: currentColor;
   padding: 0;
+}
+
+.g_visual_background.u-cover-absolute {
+  display: none;
 }
 
 .g_visual_img {
@@ -3030,7 +3040,6 @@ figure {
 
 .sp-track-wrapper.has-background {
   height: var(--size--1-5rem);
-  background-color: var(--_theme---background-secondary);
   align-self: center;
   display: flex;
 }
@@ -3040,7 +3049,7 @@ figure {
 }
 
 .sp-track {
-  min-width: var(--column-width--4);
+  min-width: var(--column-width--3);
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -3083,9 +3092,9 @@ figure {
 }
 
 .sp-play, .sp-pause {
-  width: var(--size--1rem);
   cursor: pointer;
   margin-right: 10px;
+  display: flex;
 }
 
 .sp-media-player-bar-wrapper {
@@ -3143,7 +3152,25 @@ figure {
   inset: auto 0% 0%;
 }
 
-.header_contain.u-container, .header_wrap.u-position-fixed.u-width-full {
+.header_contain {
+  padding-right: var(--site--margin);
+  padding-left: var(--site--margin);
+}
+
+.header_contain.u-container {
+  z-index: 1;
+  padding-right: var(--site--margin);
+  padding-left: var(--site--margin);
+  position: fixed;
+}
+
+.header_wrap {
+  z-index: 5000;
+  position: fixed;
+  inset: 0% 0% auto;
+}
+
+.header_wrap.u-position-fixed.u-width-full {
   z-index: 1;
   position: relative;
 }
@@ -3248,8 +3275,12 @@ figure {
 }
 
 .navbar13_container {
-  grid-column-gap: var(--size--0-125rem);
-  grid-row-gap: var(--size--0-125rem);
+  padding: var(--size--0-125rem) var(--_spacing---space--1) var(--size--0-125rem) var(--size--0-125rem);
+  grid-column-gap: var(--_spacing---space--1);
+  grid-row-gap: var(--_spacing---space--1);
+  border-radius: var(--radius--main);
+  background-color: var(--swatch--light-secondary);
+  flex-flow: column;
   grid-template-rows: auto;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-auto-columns: minmax(0, 1fr);
@@ -3280,8 +3311,8 @@ figure {
 
 .navbar13_link {
   height: var(--size--1-5rem);
-  padding: var(--size--0-125rem) var(--_spacing---space--1);
-  background-color: var(--_theme---background-secondary);
+  padding: var(--size--0-25rem) var(--_spacing---space--1);
+  background-color: var(--swatch--transparent);
   flex: none;
   justify-content: center;
   align-self: center;
@@ -3289,12 +3320,21 @@ figure {
   display: flex;
 }
 
-.navbar13_link:where(.w-variant-f17a7e11-83a3-9276-5917-90f770e8c3f7), .navbar13_link:hover {
+.navbar13_link:where(.w-variant-f17a7e11-83a3-9276-5917-90f770e8c3f7) {
   background-color: var(--_theme---background);
 }
 
+.navbar13_link:hover {
+  background-color: var(--swatch--brand);
+}
+
 .navbar13_link.w--current {
-  color: var(--\<unknown\|relume-variable-neutral-shade-7\>);
+  background-color: var(--swatch--transparent);
+  color: var(--_theme---text);
+}
+
+.navbar13_link.w--current:hover {
+  background-color: var(--swatch--brand);
 }
 
 .navbar13_dropdown-toggle {
@@ -3374,7 +3414,6 @@ figure {
   position: absolute;
   inset: auto 0% 0%;
   overflow: visible auto;
-  box-shadow: 0 0 20px 100vh #0000000d;
 }
 
 .drawer_wrap.is-hidden {
@@ -3384,10 +3423,20 @@ figure {
   display: none;
 }
 
+.drawer_wrap.u-vflex-left-bottom {
+  box-shadow: none;
+  width: 100vw;
+  position: fixed;
+  inset: 0%;
+}
+
 .drawer_contain {
   z-index: 3;
-  background-color: var(--_theme---background);
-  position: relative;
+  height: 100svh;
+}
+
+.drawer_contain.u-vflex-center-center {
+  pointer-events: none;
 }
 
 .drawer_layout {
@@ -3396,8 +3445,10 @@ figure {
 }
 
 .drawer_list_wrap {
-  background-color: var(--_theme---background);
-  grid-column-start: 2;
+  width: 100%;
+  height: 500vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .drawer_list_wrap.u-min-height-screen {
@@ -3414,10 +3465,20 @@ figure {
   overflow: visible;
 }
 
+.drawer_list.u-hflex-center-top {
+  grid-column-gap: var(--site--gutter);
+  grid-row-gap: var(--site--gutter);
+  width: -moz-fit-content;
+  width: fit-content;
+  position: relative;
+}
+
 .drawer_list_item {
   z-index: 0;
-  width: var(--column-width--1);
-  min-width: var(--size--9-5rem);
+  width: var(--column-width--2);
+  min-width: var(--size--12rem);
+  cursor: pointer;
+  pointer-events: auto;
   position: relative;
   overflow: visible;
 }
@@ -3431,9 +3492,32 @@ figure {
 }
 
 .drawer_text_wrap {
-  padding-top: var(--size--0-125rem);
+  left: 0%;
+  top: var(--_spacing---space--1);
   opacity: 0;
-  grid-column: span 5;
+  pointer-events: none;
+  position: absolute;
+  bottom: auto;
+  right: 0%;
+}
+
+.drawer_text_wrap.is-visible {
+  opacity: 100;
+}
+
+.drawer_text_wrap.u-alignment-center {
+  z-index: 1000;
+  opacity: 1;
+  position: absolute;
+  inset: 0% 0% auto;
+}
+
+.drawer_text_wrap.u-alignment-center.u-vflex-center-top {
+  z-index: 5000;
+  padding-top: var(--site--margin);
+  opacity: 1;
+  pointer-events: none;
+  inset: 0% 0% auto;
 }
 
 .drawer_img_wrap.g_visual_wrap {
@@ -3461,12 +3545,160 @@ figure {
 
 .drawer_bg {
   z-index: 1;
-  -webkit-backdrop-filter: blur(100px);
-  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur() brightness(102%);
+  backdrop-filter: blur() brightness(102%);
+  background-color: #fff;
   flex: 1;
   width: 100vw;
   position: fixed;
   inset: 0%;
+}
+
+.navbar_title {
+  height: var(--size--1-5rem);
+  padding: var(--size--0-125rem) var(--_spacing---space--1);
+  background-color: var(--_theme---background-secondary);
+  font-family: var(--_typography---font--italic-family);
+  flex: none;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  display: none;
+}
+
+.navbar_title:where(.w-variant-f17a7e11-83a3-9276-5917-90f770e8c3f7), .navbar_title:hover {
+  background-color: var(--_theme---background);
+}
+
+.navbar_title.w--current {
+  color: var(--\<unknown\|relume-variable-neutral-shade-7\>);
+}
+
+.heading-_layout.u-alignment-center {
+  width: 100%;
+}
+
+.drawer_hidden_text {
+  display: none;
+}
+
+.svg {
+  width: var(--size--0-75rem);
+}
+
+.svg-2 {
+  height: var(--size--0-75rem);
+}
+
+.navbar_link_wrap.u-hflex-center-top {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.center_hero_wrap {
+  min-height: 100svh;
+}
+
+.center_hero_intro_wrap {
+  text-align: justify;
+  text-align-last: center;
+}
+
+.section-wrapper {
+  width: 100%;
+  padding-bottom: 0;
+  position: relative;
+}
+
+.section-height {
+  width: 100%;
+  height: 600vw;
+}
+
+.sticky-wrapper {
+  position: absolute;
+  inset: 0%;
+}
+
+.sticky-element {
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  position: sticky;
+  top: 0;
+  overflow: scroll;
+}
+
+.sticky-element.disable-overflow {
+  overflow: hidden;
+}
+
+.track {
+  flex: none;
+  justify-content: flex-start;
+  align-items: stretch;
+  display: flex;
+  position: relative;
+  transform: translate(0%);
+}
+
+.track-flex {
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-right: -100vw;
+  display: flex;
+}
+
+.panel1 {
+  background-image: url('../images/and-machines-mAiFQrt9xMc-unsplash.jpg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  flex: none;
+  width: 820px;
+  height: 100%;
+}
+
+.panel2 {
+  background-image: url('../images/and-machines-SZd_V4A8gYo-unsplash.jpg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  flex: none;
+  width: 100vw;
+  height: 100%;
+}
+
+.panel3 {
+  background-image: url('../images/and-machines-odNU0f3jmUg-unsplash.jpg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  flex: none;
+  width: 80vh;
+  height: 100%;
+}
+
+.panel4 {
+  background-image: url('../images/and-machines-YLplJ9m_RKE-unsplash.jpg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  flex: none;
+  width: 130vh;
+  height: 100%;
+}
+
+.panel5 {
+  background-image: url('../images/and-machines-vqTWfa4DjEk-unsplash.jpg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  flex: none;
+  width: 50vw;
+  height: 100%;
 }
 
 @media screen and (max-width: 991px) {
@@ -3842,6 +4074,15 @@ figure {
     padding-bottom: 0;
     padding-right: 0;
   }
+
+  .navbar_title {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .panel5 {
+    width: 120vw;
+  }
 }
 
 @media screen and (max-width: 767px) {
@@ -4009,13 +4250,10 @@ figure {
   font-style: normal;
   font-display: swap;
 }
-
-/* Custom hover fade for .drawer_list_item */
-.drawer_list_item .drawer_text_wrap {
-  opacity: 0;
-  transition: opacity 0.05s ease;
-}
-
-.drawer_list_item:hover .drawer_text_wrap {
-  opacity: 1;
+@font-face {
+  font-family: 'Monoserif';
+  src: url('../fonts/CMMCodaNormalizedUnlicensedTrial-MonoSerif.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
