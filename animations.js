@@ -4,6 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('GSAP not loaded');
     return;
   }
+  if (!window.ScrollTrigger) {
+    console.error('ScrollTrigger not loaded');
+    // return; // Might not be critical for hover, but good practice
+  }
+  // We don't strictly need TextPlugin for the hover effect,
+  // but let's check for it before trying to register
+  if (window.TextPlugin) {
+     gsap.registerPlugin(ScrollTrigger, TextPlugin);
+     console.log('Registered ScrollTrigger and TextPlugin');
+  } else {
+     gsap.registerPlugin(ScrollTrigger); // Register only ScrollTrigger if TextPlugin is missing
+     console.log('Registered ScrollTrigger (TextPlugin not found)');
+  }
   
   if (!window.barba) {
     console.error('Barba not loaded');
@@ -24,17 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize scroll animations
   initScrollAnimations();
   
-  // Initialize hover animations for instruments list items
-  initInstrumentsHoverEffect();
+  // Initialize hover states for instruments list items
+  initInstrumentsHoverEffect(); // Just sets initial state
   
   // Check if we're starting on the instruments page
   const isInstrumentsPage = window.location.pathname.includes('instruments') ||
                            document.title.includes('Instruments');
                            
-  if (isInstrumentsPage) {
-    // Use the same function for consistency
-    setTimeout(animateDrawerItems, 100);
-  }
+  // TEMPORARILY COMMENT OUT animateDrawerItems CALL
+  // if (isInstrumentsPage) {
+  //   // Use the same function for consistency
+  //   setTimeout(animateDrawerItems, 100); // ERROR: animateDrawerItems is not defined
+  // }
 });
 
 // Function to update navbar title
@@ -60,43 +74,32 @@ function updateHeaderWithContainerId() {
 
 // Function to initialize hover effects for instrument list items
 function initInstrumentsHoverEffect() {
+  console.log('Running initInstrumentsHoverEffect...'); // DEBUG
   const instrumentItems = document.querySelectorAll('.instruments_list_item');
   
-  if (instrumentItems.length === 0) return;
+  if (instrumentItems.length === 0) {
+    console.log('No instrument list items found to initialize.'); // DEBUG
+    return;
+  }
   
-  console.log(`Found ${instrumentItems.length} instrument list items, setting up hover animations`);
+  console.log(`Found ${instrumentItems.length} instrument list items, setting initial states`); // DEBUG
   
-  instrumentItems.forEach(item => {
-    // Get the text wrapper inside the item
+  instrumentItems.forEach((item, index) => {
     const textWrap = item.querySelector('.instruments_txt_wrap');
-    
-    if (!textWrap) return;
-    
-    // Set initial state - hidden and slightly offset downward (less offset - 5px instead of 10px)
-    gsap.set(textWrap, { 
-      opacity: 0, 
-      y: 5 
-    });
-    
-    // Hover in animation - faster (0.25s instead of 0.3s)
-    item.addEventListener('mouseenter', () => {
-      gsap.to(textWrap, {
-        opacity: 1,
-        y: 0,
-        duration: 0.25,
-        ease: "power1.out" // Smoother ease
-      });
-    });
-    
-    // Hover out animation - faster (0.15s instead of 0.2s)
-    item.addEventListener('mouseleave', () => {
-      gsap.to(textWrap, {
-        opacity: 0,
-        y: 5, // Reduced offset on exit too
-        duration: 0.15,
-        ease: "power1.in" // Smoother ease
-      });
-    });
+    if (textWrap) {
+      // Ensure GSAP exists before using it here
+      if (window.gsap) {
+         gsap.set(textWrap, { 
+           opacity: 0, 
+           y: 5 
+         });
+         console.log(`Set initial state for item ${index}`); // DEBUG
+      } else {
+         console.error("GSAP not available in initInstrumentsHoverEffect"); // DEBUG
+      }
+    } else {
+      console.log(`Warning: No .instruments_txt_wrap found for item ${index}`); // DEBUG
+    }
   });
 }
 
@@ -148,8 +151,8 @@ function initBarba() {
         // Fast exit animation
         await gsap.to(current.container, { 
           opacity: 0,
-          y: 10, // Smaller offset for faster appearance
-          duration: 0.3, // Faster duration
+          y: 10,
+          duration: 0.3,
           ease: 'power1.out'
         });
       },
@@ -159,7 +162,7 @@ function initBarba() {
         if (drawerItems.length) {
           gsap.set(drawerItems, { 
             opacity: 0, 
-            y: 20 // Smaller offset for faster movement
+            y: 20
           });
           
           // Also set inner elements if needed
@@ -168,9 +171,9 @@ function initBarba() {
             const titleElement = item.querySelector('.drawer_item_info .drawer_title');
             const descElement = item.querySelector('.drawer_item_info .drawer_desc');
             
-            if (imgWrap) gsap.set(imgWrap, { opacity: 0, scale: 0.95 }); // Less scaling
-            if (titleElement) gsap.set(titleElement, { opacity: 0, y: 10 }); // Smaller offset
-            if (descElement) gsap.set(descElement, { opacity: 0, y: 10 }); // Smaller offset
+            if (imgWrap) gsap.set(imgWrap, { opacity: 0, scale: 0.95 });
+            if (titleElement) gsap.set(titleElement, { opacity: 0, y: 10 });
+            if (descElement) gsap.set(descElement, { opacity: 0, y: 10 });
           });
         }
       },
@@ -179,8 +182,12 @@ function initBarba() {
         await gsap.to(next.container, { 
           opacity: 1,
           y: 0,
-          duration: 0.3, // Faster duration
-          ease: 'power1.out'
+          duration: 0.3,
+          ease: 'power1.out',
+          onComplete: () => {
+            // Refresh ScrollTrigger after animation completes
+            if (window.ScrollTrigger) ScrollTrigger.refresh();
+          }
         });
         
         // Then animate drawer items with a faster stagger
@@ -190,13 +197,26 @@ function initBarba() {
           await gsap.to(drawerItems, {
             opacity: 1,
             y: 0,
-            duration: 0.4, // Faster
-            stagger: 0.06, // Much quicker stagger
-            ease: "power2.out"
+            duration: 0.4,
+            stagger: 0.06,
+            ease: "power2.out",
+            onComplete: () => {
+              // Refresh ScrollTrigger again after drawer animations
+               if (window.ScrollTrigger) ScrollTrigger.refresh();
+            }
           });
           
           // Quick animation for inner elements if needed
-          const tl = gsap.timeline();
+          const tl = gsap.timeline({
+            onComplete: () => {
+              // Refresh ScrollTrigger after timeline completes
+               if (window.ScrollTrigger) ScrollTrigger.refresh();
+              
+              // Re-initialize the hover states after animations complete
+              // No need for timeout here as it's an onComplete callback
+              initInstrumentsHoverEffect(); 
+            }
+          });
           
           // Image wrappers
           const imgWraps = next.container.querySelectorAll('.drawer_list_item .drawer_img_wrap');
@@ -204,8 +224,8 @@ function initBarba() {
             tl.to(imgWraps, {
               opacity: 1,
               scale: 1,
-              duration: 0.3, // Faster
-              stagger: 0.04, // Much quicker stagger
+              duration: 0.3,
+              stagger: 0.04,
               ease: "power1.out"
             });
           }
@@ -216,8 +236,8 @@ function initBarba() {
             tl.to(titles, {
               opacity: 1,
               y: 0,
-              duration: 0.25, // Faster
-              stagger: 0.03, // Much quicker stagger
+              duration: 0.25,
+              stagger: 0.03,
               ease: "power1.out"
             }, "-=0.2");
           }
@@ -228,14 +248,16 @@ function initBarba() {
             tl.to(descs, {
               opacity: 1,
               y: 0,
-              duration: 0.25, // Faster
-              stagger: 0.03, // Much quicker stagger
+              duration: 0.25,
+              stagger: 0.03,
               ease: "power1.out" 
             }, "-=0.2");
           }
           
-          // Return the timeline so Barba waits for it to complete
           return tl;
+        } else {
+           // If no drawerItems, still need to init hover effects
+           initInstrumentsHoverEffect();
         }
       },
       after() {
@@ -262,7 +284,11 @@ function initBarba() {
           opacity: 0,
           y: 20, 
           duration: 0.4,
-          ease: 'power2.out'
+          ease: 'power2.out',
+          onComplete: () => {
+            // Refresh ScrollTrigger after animation completes
+             if (window.ScrollTrigger) ScrollTrigger.refresh();
+          }
         });
       },
       after() {
@@ -284,17 +310,23 @@ function initBarba() {
       resetWebflow(data);
     }
     
-    // Re-enable hover effects
-    isTransitioning = false;
+    // Re-enable hover effects (isTransitioning might need definition if used)
+    // isTransitioning = false; 
     
-    // Check if we're on instruments page and animate drawer items
+    // Check if we're on instruments page
     const isInstrumentsPage = window.location.pathname.includes('instruments');
     if (isInstrumentsPage) {
+      // TEMPORARILY COMMENT OUT animateDrawerItems CALL
       // Animate drawer items now that page transition is complete
-      setTimeout(() => animateDrawerItems(), 100);
+      // setTimeout(() => animateDrawerItems(), 100); // ERROR: animateDrawerItems is not defined
       
-      // Initialize hover effects for instruments (after page transition)
-      setTimeout(() => initInstrumentsHoverEffect(), 200);
+      // Just set initial states, event delegation will handle the rest
+      // Use a timeout to ensure DOM is fully ready after transition
+      setTimeout(() => {
+        console.log('Running initInstrumentsHoverEffect from barba.hooks.after timeout'); // DEBUG
+        initInstrumentsHoverEffect();
+        if (window.ScrollTrigger) ScrollTrigger.refresh();
+      }, 150); // Reduced delay slightly
     } else {
       // Only initialize other animations if not on instruments page
       initScrollAnimations();
@@ -307,9 +339,6 @@ function initBarba() {
     updateNavbarTitle();
   });
 }
-
-// Ensure ScrollTrigger is registered
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 // Function to initialize scroll animations for images
 function initScrollAnimations() {
@@ -346,4 +375,58 @@ function initScrollAnimations() {
   // Refresh ScrollTrigger in case new elements were added dynamically
   ScrollTrigger.refresh();
 }
+
+// Add this global event delegation at the end of your file
+document.addEventListener('mouseover', function(e) {
+  // Ensure GSAP exists
+  if (!window.gsap) return; 
+  
+  const instrumentItem = e.target.closest('.instruments_list_item');
+  if (instrumentItem) {
+    console.log('Event: mouseover detected on instruments_list_item', instrumentItem); // DEBUG
+    const textWrap = instrumentItem.querySelector('.instruments_txt_wrap');
+    if (textWrap) {
+      console.log('Found textWrap for mouseover:', textWrap); // DEBUG
+      gsap.killTweensOf(textWrap);
+      gsap.to(textWrap, {
+        opacity: 1,
+        y: 0,
+        duration: 0.25,
+        ease: "power1.out",
+        overwrite: 'auto' 
+      });
+    } else {
+      console.log('Error: textWrap not found inside hovered item.'); // DEBUG
+    }
+  }
+});
+
+document.addEventListener('mouseout', function(e) {
+  // Ensure GSAP exists
+  if (!window.gsap) return;
+
+  const instrumentItem = e.target.closest('.instruments_list_item');
+  if (instrumentItem) {
+    console.log('Event: mouseout detected on instruments_list_item', instrumentItem); // DEBUG
+    // Ensure the mouse is actually leaving the item
+    if (!e.relatedTarget || !instrumentItem.contains(e.relatedTarget)) {
+      const textWrap = instrumentItem.querySelector('.instruments_txt_wrap');
+      if (textWrap) {
+        console.log('Found textWrap for mouseout:', textWrap); // DEBUG
+        gsap.killTweensOf(textWrap);
+        gsap.to(textWrap, {
+          opacity: 0,
+          y: 5,
+          duration: 0.15,
+          ease: "power1.in",
+          overwrite: 'auto' 
+        });
+      } else {
+         console.log('Error: textWrap not found inside item for mouseout.'); // DEBUG
+      }
+    } else {
+       console.log('Mouseout ignored (still inside item).'); // DEBUG
+    }
+  }
+});
 
